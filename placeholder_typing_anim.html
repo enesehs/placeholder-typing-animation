@@ -1,0 +1,160 @@
+/**
+ * placeholder_typing_anim.js/html
+ *
+ *
+ * Coder: [enesehs]
+ * E-Mail: [enes.ehs@protonmail.com]
+ * Date: [03.08.2023]
+ * Version: [V1.0 Alpha]
+ *
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Placeholder Typing Animation</title>
+</head>
+<body>
+  <!-- Input element to display the placeholder typing animation -->
+  <input type="text" id="username" placeholder="" readonly>
+  
+  <script>
+    // List of texts to be displayed in the placeholder
+    const texts = [
+      "Captain Price",
+      "Soap MacTavish",
+      "Alex Mason",
+      "Nikolai Belinski",
+      "John 'Soap' MacTavish",
+      "Simon 'Ghost' Riley",
+      "David Mason",
+      "Raul Menendez",
+      "Alex 'Ajax' Johnson"
+    ];
+    
+    // Initialize variables to manage the animation
+    let currentTextIndex = 0;
+    let currentText = texts[currentTextIndex];
+    let currentCharIndex = 0;
+    let inputElement = document.getElementById('username');
+    let isTyping = true; // Is typing animation running?
+    let isDeleting = false; // Is deletion animation running?
+    let isAnimationRunning = false; // Is the overall animation running?
+    let isFirstTime = true; // Is it the first time writing this text?
+
+    // Function to handle the typing and deleting animation
+    function animateText() {
+      let newText = currentText.substring(0, currentCharIndex);
+
+      if (isDeleting) {
+        newText = currentText.substring(0, currentCharIndex);
+        currentCharIndex--;
+        if (currentCharIndex < 0) {
+          isDeleting = false;
+          if (isFirstTime) {
+            isFirstTime = false;
+          } else {
+            currentTextIndex++;
+            if (currentTextIndex >= texts.length) {
+              currentTextIndex = 0;
+            }
+          }
+          currentText = texts[currentTextIndex];
+        }
+      } else if (currentCharIndex >= currentText.length) {
+        setTimeout(() => {
+          isDeleting = true;
+        }, 2000); // Wait for 2 seconds and then start the delete animation
+      } else {
+        newText = currentText.substring(0, currentCharIndex);
+        currentCharIndex++;
+      }
+
+      inputElement.setAttribute('placeholder', newText + (isTyping ? '|' : ''));
+
+      if (isTyping && currentCharIndex <= currentText.length) {
+        setTimeout(animateText, 90); // Typing speed (ms)
+      } else if (!isTyping && currentCharIndex >= 0) {
+        setTimeout(animateText, 30); // Deletion speed (ms)
+      } else {
+        isTyping = true;
+        isDeleting = false;
+        currentCharIndex = 0;
+        isFirstTime = true;
+        setTimeout(animateText, 3000); // Wait for 3 seconds and then restart the loop
+      }
+    }
+
+    // Function to handle the blinking cursor effect
+    function blinkCursor() {
+      const currentPlaceholder = inputElement.getAttribute('placeholder');
+      if (isTyping && currentPlaceholder[currentPlaceholder.length - 1] === '|') {
+        inputElement.setAttribute('placeholder', currentPlaceholder.slice(0, -1));
+      } else if (isTyping) {
+        inputElement.setAttribute('placeholder', currentPlaceholder + '|');
+      }
+      if (!isDeleting && isTyping) {
+        setTimeout(blinkCursor, 500); // Blink speed (ms)
+      } else if (isDeleting && !isTyping) {
+        setTimeout(blinkCursor, 200); // Blink speed (ms) faster during deletion
+      }
+    }
+
+    // Function to start the typing animation
+    function startTypingAnimation() {
+      if (!isAnimationRunning) {
+        isAnimationRunning = true;
+        isTyping = true;
+        isDeleting = false;
+        isFirstTime = true;
+        animateText();
+        blinkCursor();
+      }
+    }
+
+    // Function to stop the typing animation
+    function stopTypingAnimation() {
+      isAnimationRunning = false;
+      isTyping = false;
+      isDeleting = false;
+    }
+
+    // Start the typing animation when the page is loaded
+    startTypingAnimation();
+  </script>
+
+  <!-- Explanation of the Placeholder Typing Animation -->
+  <h2>Placeholder Typing Animation</h2>
+  <p>
+    This is a JavaScript code snippet that creates a realistic placeholder typing animation effect for an input element.
+    The animation simulates the process of typing and deleting different texts, similar to how a user interacts with an input field.
+  </p>
+  <h3>How it works</h3>
+  <p>
+    The code defines an array texts that contains a list of texts to be displayed in the input placeholder.
+    It initializes variables currentTextIndex, currentText, and currentCharIndex to keep track of the current text being displayed and the current character index.
+    The inputElement variable stores the reference to the input element in the HTML.
+    The animation is controlled by three boolean variables: isTyping, isDeleting, and isAnimationRunning.
+    The function animateText() is responsible for the typing and deleting animation. It uses setTimeout() to control the animation speed.
+    When typing, it extracts the substring of the currentText up to the currentCharIndex and updates the input's placeholder accordingly. It also adds a blinking cursor | to create the typing effect.
+    When the text is fully typed, it switches to the deleting mode, removing characters one by one until the entire text is deleted.
+    After a delay of 2 seconds, the animation switches back to typing mode with the next text in the texts array.
+    The blinkCursor() function handles the blinking cursor effect by adding and removing the | character from the input's placeholder.
+    The startTypingAnimation() function starts the animation loop if it's not already running.
+    The stopTypingAnimation() function stops the animation.
+    The resetTextAnimation() function resets the animation to its initial state, useful when you want to restart the animation from the beginning.
+  </p>
+  <h3>How to use</h3>
+  <p>
+    Include the JavaScript code in your HTML file or link to an external JS file.
+    Ensure the input element has an id="username" attribute. You can change this ID to match your input element if needed.
+    Call startTypingAnimation() to start the animation when the page loads or when you want to begin the animation.
+  </p>
+  <h3>License</h3>
+  <p>
+    This code is provided under the MIT License. Feel free to use and modify it according to your needs.
+  </p>
+  <p>
+    Note: Make sure to customize the texts array to include the texts you want to be displayed in the animation.
+    Enjoy your placeholder typing animation!
+  </p>
+</body>
+</html>
